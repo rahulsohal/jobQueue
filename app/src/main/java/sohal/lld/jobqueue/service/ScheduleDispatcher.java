@@ -21,7 +21,6 @@ public class ScheduleDispatcher {
     private final JobRepository repo;
     private final JobProducer producer;
 
-
     @Scheduled(fixedDelayString = "${jobs.scheduler.poll-ms}")
     public void dispatch() {
         var now = LocalDateTime.now();

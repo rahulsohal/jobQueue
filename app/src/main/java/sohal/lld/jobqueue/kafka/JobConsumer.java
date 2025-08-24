@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sohal.lld.jobqueue.entity.Job;
 import sohal.lld.jobqueue.entity.JobStatus;
 import sohal.lld.jobqueue.repository.JobRepository;
@@ -20,7 +21,7 @@ public class JobConsumer {
     private final JobRepository repo;
     private final StringRedisTemplate redis;
 
-    @KafkaListener(topics = "${jobs.topic}", groupId = "job-workers")
+    @KafkaListener(topics = "jobs.dispatch", concurrency = "1")
     public void onMessage(ConsumerRecord<String, String> rec) {
         String jobId = rec.key();
         String payload = rec.value();
