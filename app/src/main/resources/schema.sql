@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   max_retries int NOT NULL,
   retry_count int NOT NULL,
   scheduled_at timestamp NOT NULL,
+  completed_at timestamp NULL,
   created_at timestamp NOT NULL,
-  updated_at timestamp NOT NULL
+  updated_at timestamp NULL
 );

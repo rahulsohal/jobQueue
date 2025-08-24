@@ -16,7 +16,8 @@ import sohal.lld.jobqueue.service.JobService;
 import javax.print.attribute.standard.JobPriority;
 import java.time.LocalDateTime;
 
-@RestController @RequestMapping("/jobs")
+@RestController
+@RequestMapping("/v1/jobs")
 public class JobController {
     private final JobService svc;
     public JobController(JobService svc){ this.svc = svc; }
@@ -29,11 +30,13 @@ public class JobController {
             LocalDateTime scheduledAt
     ) {}
 
-    @PostMapping public Job create(@RequestBody CreateJobReq req){
+    @PostMapping
+    public Job create(@RequestBody CreateJobReq req){
         return svc.create(req.type(), req.payload(), req.priority(), req.maxRetries(), req.scheduledAt());
     }
 
-    @GetMapping("/{id}") public java.util.Optional<Job> get(@PathVariable String id){
+    @GetMapping("/{id}")
+    public java.util.Optional<Job> get(@PathVariable String id){
         return svc.get(id);
     }
 }

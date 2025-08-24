@@ -1,24 +1,31 @@
 package sohal.lld.jobqueue.kafka;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import sohal.lld.jobqueue.entity.Job;
 import sohal.lld.jobqueue.entity.JobStatus;
 import sohal.lld.jobqueue.repository.JobRepository;
 
 import java.time.Duration;
 
-@Component @RequiredArgsConstructor
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class JobConsumer {
     private final JobRepository repo;
     private final StringRedisTemplate redis;
 
     @KafkaListener(topics = "${jobs.topic}", groupId = "job-workers")
-    public void onMessage(org.apache.kafka.clients.consumer.ConsumerRecord<String,String> rec) {
+    public void onMessage(ConsumerRecord<String, String> rec) {
         String jobId = rec.key();
         String payload = rec.value();
 
+        log.info("Received and processing job: {}", jobId);
         // Idempotency: set processing lock with TTL 5 min; skip if present
         String lockKey = "job:lock:" + jobId;
         Boolean acquired = redis.opsForValue().setIfAbsent(lockKey, "1", Duration.ofMinutes(5));

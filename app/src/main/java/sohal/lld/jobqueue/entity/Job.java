@@ -37,7 +37,7 @@ public class Job {
     }
 
     @PreUpdate
-    void  preUpdate() {
+    void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
